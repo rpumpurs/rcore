@@ -1,0 +1,133 @@
+html {
+    font-family: MuseoSans;
+    color: #384045;
+    font-size: 12px;
+    font-weight: 500;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+}
+
+.header {
+    margin-top: 20px;
+    line-height: 23px;
+}
+
+.footer {
+    border-top: solid 1px #dcdee0;
+    margin-top: 100px;
+    margin-bottom: 30px;
+    line-height: 40px;
+    color: #797f82;
+}
+
+a, a:hover {
+    color: #384045;
+    text-decoration: none;
+}
+
+a.blue, a.blue:hover {
+    color: #007bff;
+    text-decoration: none;
+}
+
+h1 {
+    height: 36px;
+    font-size: 30px;
+    font-weight: 300;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #797f82;
+}
+
+h2 {
+    color: #797f82;
+    font-weight: 300;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+}
+
+table {
+    border: solid 1px #dcdee0;
+}
+
+table th.table_name {
+    font-size: 24px;
+    font-weight: 300;
+}
+
+table th {
+    color: #797f82;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+table tr {
+    border-top: solid 1px #dcdee0;
+    border-bottom: solid 1px #dcdee0;
+    height: 50px;
+    line-height: 32px;
+}
+
+a.button {
+    display: inline-block;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 3px;
+    background-color: #98ca02;
+    font-size: 14px;
+    font-weight: bold;
+    text-align: center;
+    color: #ffffff;
+    padding: 0 20px;
+    min-width: 110px;
+    margin: 0 5px;
+}
+
+.gutter {
+    height: 20px;
+    clear: both;
+}
+
+img.avatar {
+    float: left;
+    margin-right: 5px;
+    border-radius: 50%;
+    border: 1px solid #707070;
+    width: 23px;
+    height: 23px;
+}
+
+.success-flash, .error-flash {
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 48px;
+    height: 48px;
+    border-radius: 3px;
+    color: #384045;
+    padding-left: 16px;
+}
+
+.success-flash {
+    border: solid 1px #98ca02;
+    background-color: #faffe9;
+}
+
+.error-flash {
+    border: solid 1px #ff4141;
+    background-color: rgba(255, 65, 65, 0.1);
+}
+
+input {
+    width: 408px;
+    height: 32px;
+    border-radius: 3px;
+    border: solid 1px #dcdee0;
+    background-color: #ffffff;
+    padding-left: 12px
+}

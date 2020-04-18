@@ -1,0 +1,33 @@
+version: "3.5"
+services:
+  rcore_nginx:
+    image: nginx:alpine
+    container_name: rcore_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - .:/rcore
+      - ./etc/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - rcore_network
+    depends_on:
+      - rcore_phpfpm
+
+  rcore_phpfpm:
+    image: php:7.3-fpm
+    container_name: rcore_phpfpm
+    volumes:
+      - .:/rcore
+      - dev-cachevolume:/data
+    working_dir: /rcore
+    networks:
+      - rcore_network
+
+networks:
+  rcore_network:
+    driver: bridge
+
+volumes:
+  dev-datavolume:
+  dev-cachevolume:

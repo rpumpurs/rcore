@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% block meta %}{% endblock %}
+
+    <title>{{ title }} | {{ applicationName }}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<div class="container-fluid" style="padding: 0 100px">
+    <div class="row header" style="display: block">
+        <div class="float-left">
+            <a href="/">Index</a>
+        </div>
+        <div class="float-right">
+            {% if user %}
+                {{ user.name }}&nbsp;|&nbsp;<a href="/logout">Logout</a>
+                <img alt="{{ user.name }}" class="avatar" src="{{ user.avatar_url }}"/>
+            {% else %}
+                Logged out
+            {% endif %}
+        </div>
+    </div>
+    <div class="row gutter"></div>
+    <div class="row">
+        <h1>{{ title }}</h1>
+    </div>
+    {% if flashSuccessMessage %}
+        <div class="row gutter"></div>
+        <div class="row success-flash">{{ flashSuccessMessage }}</div>
+    {% endif %}
+    {% if flashErrorMessage %}
+        <div class="row gutter"></div>
+        <div class="row error-flash">{{ flashErrorMessage }}</div>
+    {% endif %}
+    <div class="row gutter"></div>
+    {% block content %}{% endblock %}
+    <div class="row gutter"></div>
+    <div class="row footer">
+        Copyright © RCore
+    </div>
+    <div class="row gutter"></div>
+</div>
+</body>
+</html>
