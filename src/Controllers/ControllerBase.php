@@ -2,10 +2,12 @@
 
 namespace RCore\Controllers;
 
+use RCore\Handlers\ControllerConfig;
 use RCore\Handlers\Envs;
 use RCore\Handlers\SessionManager;
 use RCore\Handlers\Url;
 use RCore\OAuth\GitLab;
+use RCore\OAuth\OAuth;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -19,22 +21,39 @@ class ControllerBase
 
     protected $authRequired = true;
 
-    protected $OAuth;
+    /**
+     * @var ControllerConfig
+     */
+    protected $config;
 
-    protected $sessionManager;
-
+    /**
+     * @var Envs
+     */
     protected $envs;
 
     /**
-     * ControllerBase constructor.
+     * @var OAuth
+     */
+    protected $OAuth;
+
+    /**
+     * @var SessionManager
+     */
+    protected $sessionManager;
+
+    public function injectDependencies(ControllerConfig $config, Envs $envs, SessionManager $sessionManager)
+    {
+        $this->config = $config;
+        $this->envs = $envs;
+        $this->sessionManager = $sessionManager;
+    }
+
+    /**
      * @throws \RCore\Exceptions\ConfigNotDefined
      */
-    public function __construct()
+    public function runPreController()
     {
-        $this->envs = new Envs($_ENV);
         $this->applicationName = $this->envs->param('APPLICATION_NAME');
-
-        $this->sessionManager = new SessionManager();
 
         $this->OAuth = new GitLab(
             $this->sessionManager,
@@ -95,7 +114,7 @@ class ControllerBase
 
     public function render($template, $vars = [])
     {
-        $loader = new FilesystemLoader($_ENV['TEMPLATE_FOLDER']);
+        $loader = new FilesystemLoader($this->config->templateFolder());
         $twig = new Environment($loader);
         $vars = array_merge($vars, [
                 'applicationName' => $this->applicationName,

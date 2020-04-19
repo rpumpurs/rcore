@@ -3,9 +3,13 @@
 namespace RCore;
 
 use Exception;
+use RCore\Controllers\ControllerBase;
 use RCore\Exceptions\ConfigNotDefined;
+use RCore\Handlers\ControllerConfig;
+use RCore\Handlers\Envs;
 use RCore\Handlers\Paths;
 use RCore\Handlers\Routes;
+use RCore\Handlers\SessionManager;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,7 +37,6 @@ class Main
     {
         $dotEnv = new Dotenv();
         $dotEnv->load($this->paths->envFile());
-        $_ENV['TEMPLATE_FOLDER'] = $this->paths->templateFolder(); // TODO figure out how to pass to ControllerBase constructor
 
         $request = Request::createFromGlobals();
 
@@ -47,14 +50,23 @@ class Main
         try {
             $parameters = $matcher->match($request->getPathInfo());
             $request->attributes->add($parameters);
-            $controller = $controllerResolver->getController($request);
-            $arguments = $argumentResolver->getArguments($request, $controller);
-            $response = call_user_func_array($controller, $arguments);
+            $controllerCallable = $controllerResolver->getController($request);
+            /** @var ControllerBase $controllerObject */
+            $controllerObject = $controllerCallable[0];
+            $controllerObject->injectDependencies(
+                new ControllerConfig($this->paths),
+                new Envs($_ENV),
+                new SessionManager(),
+                );
+            $controllerObject->runPreController();
+            $arguments = $argumentResolver->getArguments($request, $controllerCallable);
+            $response = call_user_func_array($controllerCallable, $arguments);
         } catch (ResourceNotFoundException $exception) {
             $response = new Response('Not Found', 404);
         } catch (ConfigNotDefined $e) {
             $response = new Response('Application not configured. Missing [' . $e->getMessage() . ']', 503);
         } catch (Exception $exception) {
+            var_dump($exception);
             $response = new Response('An error occurred', 500);
         }
 
