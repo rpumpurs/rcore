@@ -2,6 +2,8 @@
 
 namespace RCore\Handlers;
 
+use RCore\Objects\User;
+
 class SessionManager
 {
     static $SESSION_EXPIRE_TIME = 3 * 60 * 60; // 3h
@@ -26,7 +28,7 @@ class SessionManager
         $_SESSION['authorization_token'] = $token;
     }
 
-    public function setUser(array $user)
+    public function setUser(User $user)
     {
         $_SESSION['user'] = $user;
     }
@@ -46,7 +48,7 @@ class SessionManager
         return $_SESSION['authorization_token'] ?? null;
     }
 
-    public function user(): ?array
+    public function user(): ?User
     {
         return $_SESSION['user'] ?? null;
     }
@@ -91,5 +93,10 @@ class SessionManager
     public function isExpired()
     {
         return $_SESSION['last_activity'] < (time() - self::$SESSION_EXPIRE_TIME);
+    }
+
+    public function isAuthorized(): bool
+    {
+        return !empty($_SESSION['authorization_token']);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace RCore\OAuth;
 
-use RCore\Handlers\Config;
+use RCore\Handlers\Envs;
 use RCore\Handlers\Curl;
 
 class GitLab implements OAuth
@@ -40,14 +40,14 @@ class GitLab implements OAuth
     /**
      * GitLab constructor.
      * @param string $currentUrlBase
-     * @param Config $config
+     * @param Envs $envs
      * @throws \RCore\Exceptions\ConfigNotDefined
      */
-    public function __construct(string $currentUrlBase, Config $config)
+    public function __construct(string $currentUrlBase, Envs $envs)
     {
-        $this->gitLabURL = $config->param('GITLAB_URL');
-        $this->gitLabCIToolApplicationID = $config->param('GITLAB_CI_TOOL_APPLICATION_ID');
-        $this->gitLabCIToolApplicationSecret = $config->param('GITLAB_CI_TOOL_APPLICATION_SECRET');
+        $this->gitLabURL = $envs->param('GITLAB_URL');
+        $this->gitLabCIToolApplicationID = $envs->param('GITLAB_CI_TOOL_APPLICATION_ID');
+        $this->gitLabCIToolApplicationSecret = $envs->param('GITLAB_CI_TOOL_APPLICATION_SECRET');
 
         $this->currentUrlBase = $currentUrlBase;
     }

@@ -13,6 +13,10 @@ class AuthController extends ControllerBase
 
     public function login()
     {
+        if ($this->sessionManager->isAuthorized()) {
+            return new RedirectResponse('/');
+        }
+
         $state = bin2hex(random_bytes(16));
         $this->sessionManager->setState($state);
 
@@ -23,11 +27,17 @@ class AuthController extends ControllerBase
 
     public function processOAuthResponse(Request $request)
     {
-        if ($this->sessionManager->state() !== $request->get('state')) {
+        /*if ($this->sessionManager->state() !== $request->get('state')) {
             $this->sessionManager->setFlashErrorMessage('Login error, please contact the admin');
             return new RedirectResponse('/');
         }
+
         $this->sessionManager->setAuthorizationCode($request->get('code'));
+        */
+
+        if (!$this->OAuth->processOAuthResponse($request)) {
+            $this->sessionManager->setFlashErrorMessage('Login error, please contact the admin');
+        }
 
         return new RedirectResponse('/');
     }

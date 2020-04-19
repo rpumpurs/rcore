@@ -2,10 +2,10 @@
 
 namespace RCore\Controllers;
 
-use RCore\Handlers\Config;
+use RCore\Handlers\Envs;
 use RCore\Handlers\SessionManager;
 use RCore\Handlers\Url;
-use RCore\OAuth\GitLab;
+use RCore\OAuth\Google;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -23,7 +23,7 @@ class ControllerBase
 
     protected $sessionManager;
 
-    protected $config;
+    protected $envs;
 
     /**
      * ControllerBase constructor.
@@ -31,14 +31,28 @@ class ControllerBase
      */
     public function __construct()
     {
-        $this->config = new Config($_ENV);
-        $this->applicationName = $this->config->param('APPLICATION_NAME');
+        $this->envs = new Envs($_ENV);
+        $this->applicationName = $this->envs->param('APPLICATION_NAME');
 
         $this->sessionManager = new SessionManager();
 
-        $this->OAuth = new GitLab(
+        $this->OAuth = new Google(
+            $this->sessionManager,
             Url::resolveCurrentBase(),
-            $this->config
+            $this->envs
+        );
+
+        if ($this->authRequired) {
+            if (!$this->sessionManager->isAuthorized() || $this->sessionManager->isExpired()) {
+                $this->sessionManager->logout();
+                $this->sessionManager->setFlashErrorMessage('Session expired, please log in again');
+                (new RedirectResponse('/login'))->send();
+            }
+        }
+
+        /*$this->OAuth = new GitLab(
+            Url::resolveCurrentBase(),
+            $this->envs
         );
 
         if ($this->authRequired) {
@@ -61,7 +75,7 @@ class ControllerBase
             if (!$this->sessionManager->user()) {
                 $this->sessionManager->setUser($this->OAuth->user());
             }
-        }
+        }*/
 
         $this->sessionManager->setLastActivity();
     }

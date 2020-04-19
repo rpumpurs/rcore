@@ -21,7 +21,7 @@
         <div class="float-right">
             {% if user %}
                 {{ user.name }}&nbsp;|&nbsp;<a href="/logout">Logout</a>
-                <img alt="{{ user.name }}" class="avatar" src="{{ user.avatar_url }}"/>
+                <img alt="{{ user.name }}" class="avatar" src="{{ user.pictureURL }}"/>
             {% else %}
                 Logged out
             {% endif %}

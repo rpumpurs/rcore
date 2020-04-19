@@ -2,28 +2,40 @@
 
 namespace RCore\Handlers;
 
-use RCore\Exceptions\ConfigNotDefined;
-
 class Config
 {
-    private $params;
+    /**
+     * @var Envs
+     */
+    private $envs;
+    /**
+     * @var Paths
+     */
+    private $paths;
+    /**
+     * @var Routes
+     */
+    private $routes;
 
-    public function __construct(array $params)
+    public function __construct(Envs $envs, Paths $paths, Routes $routes)
     {
-        $this->params = $params;
+        $this->envs = $envs;
+        $this->paths = $paths;
+        $this->routes = $routes;
     }
 
-    /**
-     * @param string $name
-     * @return string
-     * @throws ConfigNotDefined
-     */
-    public function param(string $name): string
+    public function getEnvs(): Envs
     {
-        if (!isset($this->params[$name])) {
-            throw new ConfigNotDefined($name);
-        }
+        return $this->envs;
+    }
 
-        return $this->params[$name];
+    public function getPaths(): Paths
+    {
+        return $this->paths;
+    }
+
+    public function getRoutes(): Routes
+    {
+        return $this->routes;
     }
 }
