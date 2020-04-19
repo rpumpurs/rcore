@@ -2,7 +2,6 @@
 
 namespace RCore\Handlers;
 
-use RCore\Controllers\ControllerBase;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -21,6 +20,11 @@ class Routes
             '_controller' => '\RCore\Controllers\AuthController::login',
         ]);
         $routes->add('login', $route);
+
+        $route = new Route('/login_redirect/{using}', [
+            '_controller' => '\RCore\Controllers\AuthController::loginRedirect',
+        ]);
+        $routes->add('login_redirect', $route);
 
         $route = new Route('/logout', [
             '_controller' => '\RCore\Controllers\AuthController::logout',

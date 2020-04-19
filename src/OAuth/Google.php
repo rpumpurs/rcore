@@ -83,7 +83,7 @@ class Google implements OAuth
         return $client;
     }
 
-    public function getOAuthUrl(string $state): string
+    public function getOAuthUrl(): string
     {
         $client = $this->initClient();
 
@@ -136,5 +136,10 @@ class Google implements OAuth
             'name' => $response['name'],
             'avatar_url' => $response['avatar_url'],
         ];
+    }
+
+    public function isAuthorized(): bool
+    {
+        return !empty($this->sessionManager->getVar('authorization_token'));
     }
 }

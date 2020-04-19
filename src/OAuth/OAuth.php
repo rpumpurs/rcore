@@ -8,7 +8,7 @@ interface OAuth
 {
     public function processOAuthResponse(Request $request): bool;
 
-    public function getOAuthUrl(string $state): string;
+    public function getOAuthUrl(): string;
 
     public function getOAuthToken(string $code): string;
 

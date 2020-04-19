@@ -2,11 +2,14 @@
 
 namespace RCore\Controllers;
 
+use Exception;
+use RCore\Exceptions\ConfigNotDefined;
 use RCore\Handlers\ControllerConfig;
 use RCore\Handlers\Envs;
 use RCore\Handlers\SessionManager;
 use RCore\Handlers\Url;
 use RCore\OAuth\GitLab;
+use RCore\OAuth\Google;
 use RCore\OAuth\OAuth;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -49,62 +52,56 @@ class ControllerBase
     }
 
     /**
-     * @throws \RCore\Exceptions\ConfigNotDefined
+     * @throws ConfigNotDefined
      */
     public function runPreController()
     {
         $this->applicationName = $this->envs->param('APPLICATION_NAME');
 
-        $this->OAuth = new GitLab(
-            $this->sessionManager,
-            Url::resolveCurrentBase(),
-            $this->envs
-        );
-
-        /*if ($this->authRequired) {
-            if (!$this->sessionManager->isAuthorized() || $this->sessionManager->isExpired()) {
-                $this->sessionManager->logout();
-                $this->sessionManager->setFlashErrorMessage('Session expired, please log in again');
-                (new RedirectResponse('/login'))->send();
-            }
-        }*/
-
         if ($this->authRequired) {
-            if (!$this->OAuth->isAuthorized() || $this->sessionManager->isExpired()) {
+            if (!$this->resolveAuth()->isAuthorized() || $this->sessionManager->isExpired()) {
                 $this->sessionManager->logout();
                 $this->sessionManager->setFlashErrorMessage('Session expired, please log in again');
                 (new RedirectResponse('/login'))->send();
             }
         }
 
-        /*$this->OAuth = new GitLab(
-            Url::resolveCurrentBase(),
-            $this->envs
-        );
-
-        if ($this->authRequired) {
-            if ($this->sessionManager->authorizationCode()) {
-                if ($this->sessionManager->isExpired()) {
-                    $this->sessionManager->logout();
-                    $this->sessionManager->setFlashErrorMessage('Session expired, please log in again');
-                    (new RedirectResponse('/login'))->send();
-                    die();
-                }
-
-                if (!$this->sessionManager->authorizationToken()) {
-                    $this->sessionManager->setAuthorizationToken($this->OAuth->getOAuthToken($this->sessionManager->authorizationCode()));
-                }
-            } else {
-                (new RedirectResponse('/login'))->send();
-                die();
-            }
-
-            if (!$this->sessionManager->user()) {
-                $this->sessionManager->setUser($this->OAuth->user());
-            }
-        }*/
-
         $this->sessionManager->setLastActivity();
+    }
+
+    /**
+     * @param string|null $using
+     * @return OAuth
+     * @throws ConfigNotDefined
+     * @throws Exception
+     */
+    protected function resolveAuth(string $using = null): OAuth
+    {
+        if ($using) {
+            $this->sessionManager->setVar('oauthHandler', $using);
+        }
+
+        switch ($this->sessionManager->getVar('oauthHandler')) {
+            case 'gitlab':
+                $auth = new GitLab(
+                    $this->sessionManager,
+                    Url::resolveCurrentBase(),
+                    $this->envs
+                );
+                break;
+
+            case 'google':
+                $auth = new Google(
+                    $this->sessionManager,
+                    Url::resolveCurrentBase(),
+                    $this->envs
+                );
+                break;
+            default:
+                throw new Exception('Unexpected auth handler');
+        }
+
+        return $auth;
     }
 
     public function index()

@@ -84,8 +84,11 @@ class GitLab implements OAuth
         return false;
     }
 
-    public function getOAuthUrl(string $state): string
+    public function getOAuthUrl(): string
     {
+        $state = bin2hex(random_bytes(16));
+        $this->sessionManager->setState($state);
+
         return $this->gitLabURL . self::$ENDPOINT_OAUTH_AUTHORIZE . '?' . http_build_query([
                 'client_id' => $this->gitLabCIToolApplicationID,
                 'redirect_uri' => $this->currentUrlBase . self::$REDIRECT_ENDPOINT,
@@ -131,10 +134,6 @@ class GitLab implements OAuth
         } else {
             return false;
         }
-
-        /*if (!$this->sessionManager->user()) {
-            $this->sessionManager->setUser($this->OAuth->user());
-        }*/
 
         return !empty($this->sessionManager->getVar('authorization_token'));
     }

@@ -17,25 +17,33 @@ class AuthController extends ControllerBase
             return new RedirectResponse('/');
         }
 
-        $state = bin2hex(random_bytes(16));
-        $this->sessionManager->setState($state);
-
-        $oAuthUrl = $this->OAuth->getOAuthUrl($state);
-
-        return $this->render('login.twig', compact('oAuthUrl'));
+        return $this->render('login.twig');
     }
 
-    public function processOAuthResponse(Request $request)
+    /**
+     * @param $using
+     * @return RedirectResponse
+     * @throws \RCore\Exceptions\ConfigNotDefined
+     */
+    public function loginRedirect($using)
     {
-        /*if ($this->sessionManager->state() !== $request->get('state')) {
-            $this->sessionManager->setFlashErrorMessage('Login error, please contact the admin');
+        if ($this->sessionManager->isAuthorized()) {
             return new RedirectResponse('/');
         }
 
-        $this->sessionManager->setAuthorizationCode($request->get('code'));
-        */
+        $redirectUrl = $this->resolveAuth($using)->getOAuthUrl();
 
-        if (!$this->OAuth->processOAuthResponse($request)) {
+        return new RedirectResponse($redirectUrl);
+    }
+
+    /**
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws \RCore\Exceptions\ConfigNotDefined
+     */
+    public function processOAuthResponse(Request $request)
+    {
+        if (!$this->resolveAuth()->processOAuthResponse($request)) {
             $this->sessionManager->setFlashErrorMessage('Login error, please contact the admin');
         }
 
