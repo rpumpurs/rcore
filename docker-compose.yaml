@@ -24,6 +24,30 @@ services:
     networks:
       - rcore_network
 
+  rcore_mysql:
+    image: mysql:latest
+    container_name: rcore_mysql
+    volumes:
+      - dev-datavolume:/data/mysql
+    networks:
+      - rcore_network
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    command: --default-authentication-plugin=mysql_native_password
+
+  rcore_pma:
+    image: phpmyadmin/phpmyadmin
+    container_name: rcore_pma
+    volumes:
+      - ./etc/pma/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
+    networks:
+      - rcore_network
+    depends_on:
+      - rcore_mysql
+    environment:
+      PMA_HOST: rcore_mysql
+      PMA_ABSOLUTE_URI: http://localhost/pma/
+
 networks:
   rcore_network:
     driver: bridge
