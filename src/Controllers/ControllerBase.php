@@ -11,6 +11,7 @@ use RCore\Handlers\Url;
 use RCore\OAuth\GitLab;
 use RCore\OAuth\Google;
 use RCore\OAuth\OAuth;
+use RCore\OAuth\Undecided;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
@@ -98,7 +99,7 @@ class ControllerBase
                 );
                 break;
             default:
-                throw new Exception('Unexpected auth handler');
+                $auth = new Undecided();
         }
 
         return $auth;

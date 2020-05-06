@@ -107,6 +107,6 @@ class SessionManager
 
     public function getVar(string $name)
     {
-        return $_SESSION[$name];
+        return $_SESSION[$name] ?? null;
     }
 }
