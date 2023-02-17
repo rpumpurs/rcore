@@ -4,8 +4,8 @@ namespace RCore\Handlers;
 
 class Paths
 {
-    private $envFile;
-    private $templateFolder;
+    private string $envFile;
+    private string $templateFolder;
 
     public function __construct(string $envFile, string $templateFolder)
     {
@@ -13,7 +13,7 @@ class Paths
         $this->templateFolder = $templateFolder;
     }
 
-    public function envFile()
+    public function envFile(): string
     {
         return $this->envFile;
     }

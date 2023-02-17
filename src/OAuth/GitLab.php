@@ -2,6 +2,8 @@
 
 namespace RCore\OAuth;
 
+use Exception;
+use RCore\Exceptions\ConfigNotDefined;
 use RCore\Handlers\Curl;
 use RCore\Handlers\Envs;
 use RCore\Handlers\SessionManager;
@@ -10,45 +12,29 @@ use Symfony\Component\HttpFoundation\Request;
 
 class GitLab implements OAuth
 {
-    private static $ENDPOINT_OAUTH_AUTHORIZE = '/oauth/authorize';
-    private static $ENDPOINT_OAUTH_TOKEN = '/oauth/token';
+    private static string $ENDPOINT_OAUTH_AUTHORIZE = '/oauth/authorize';
+    private static string $ENDPOINT_OAUTH_TOKEN = '/oauth/token';
 
-    private static $REDIRECT_ENDPOINT = '/login/oauth_response';
+    private static string $REDIRECT_ENDPOINT = '/login/oauth_response';
 
-    private static $API_ENDPOINT = '/api/v4';
+    private static string $API_ENDPOINT = '/api/v4';
 
-    private static $ENDPOINT_AUTH_USER = '/user';
+    private static string $ENDPOINT_AUTH_USER = '/user';
 
-    /**
-     * @var string
-     */
-    private $gitLabURL;
-    /**
-     * @var string
-     */
-    private $gitLabCIToolApplicationID;
-    /**
-     * @var string
-     */
-    private $gitLabCIToolApplicationSecret;
-    /**
-     * @var string
-     */
-    private $currentUrlBase;
-    /**
-     * @var string
-     */
-    private $authToken;
-    /**
-     * @var SessionManager
-     */
-    private $sessionManager;
+    private string $gitLabURL;
+
+    private string$gitLabCIToolApplicationID;
+
+    private string$gitLabCIToolApplicationSecret;
+
+    private string $currentUrlBase;
+
+    private string $authToken;
+
+    private SessionManager $sessionManager;
 
     /**
-     * GitLab constructor.
-     * @param string $currentUrlBase
-     * @param Envs $envs
-     * @throws \RCore\Exceptions\ConfigNotDefined
+     * @throws ConfigNotDefined
      */
     public function __construct(SessionManager $sessionManager, string $currentUrlBase, Envs $envs)
     {
@@ -68,7 +54,7 @@ class GitLab implements OAuth
         }
 
         if ($code = $request->get('code')) {
-            $this->sessionManager->setAuthorizationCode($request->get('code'));
+            $this->sessionManager->setAuthorizationCode($code);
 
             $this->sessionManager->setAuthorizationToken($this->getOAuthToken($this->sessionManager->authorizationCode()));
 
@@ -84,6 +70,9 @@ class GitLab implements OAuth
         return false;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getOAuthUrl(): string
     {
         $state = bin2hex(random_bytes(16));

@@ -2,6 +2,9 @@
 
 namespace RCore\OAuth;
 
+use Google_Client;
+use Google_Service_Oauth2;
+use RCore\Exceptions\ConfigNotDefined;
 use RCore\Handlers\Curl;
 use RCore\Handlers\Envs;
 use RCore\Handlers\SessionManager;
@@ -10,50 +13,31 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Google implements OAuth
 {
-    private static $ENDPOINT_OAUTH_AUTHORIZE = '/oauth/authorize';
-    private static $ENDPOINT_OAUTH_TOKEN = '/oauth/token';
+    private static string $ENDPOINT_OAUTH_AUTHORIZE = '/oauth/authorize';
+    private static string $ENDPOINT_OAUTH_TOKEN = '/oauth/token';
 
-    private static $REDIRECT_ENDPOINT = '/login/oauth_response';
+    private static string $REDIRECT_ENDPOINT = '/login/oauth_response';
 
-    private static $API_ENDPOINT = '/api/v4';
+    private static string $API_ENDPOINT = '/api/v4';
 
-    private static $ENDPOINT_AUTH_USER = '/user';
+    private static string $ENDPOINT_AUTH_USER = '/user';
 
-    /**
-     * @var string
-     */
-    private $gitLabURL;
-    /**
-     * @var string
-     */
-    private $clientId;
-    /**
-     * @var string
-     */
-    private $apiKey;
-    /**
-     * @var string
-     */
-    private $clientSecret;
-    /**
-     * @var string
-     */
-    private $currentUrlBase;
-    /**
-     * @var string
-     */
-    private $authToken;
-    /**
-     * @var SessionManager
-     */
-    private $sessionManager;
+    private string $gitLabURL;
+
+    private string $clientId;
+
+    private string $apiKey;
+
+    private string $clientSecret;
+
+    private string $currentUrlBase;
+
+    private string $authToken;
+
+    private SessionManager $sessionManager;
 
     /**
-     * GitLab constructor.
-     * @param SessionManager $sessionManager
-     * @param string $currentUrlBase
-     * @param Envs $envs
-     * @throws \RCore\Exceptions\ConfigNotDefined
+     * @throws ConfigNotDefined
      */
     public function __construct(SessionManager $sessionManager, string $currentUrlBase, Envs $envs)
     {
@@ -66,9 +50,9 @@ class Google implements OAuth
         $this->apiKey = $envs->param('GOOGLE_API_KEY');
     }
 
-    private function initClient(): \Google_Client
+    private function initClient(): Google_Client
     {
-        $client = new \Google_Client();
+        $client = new Google_Client();
         $client->setApplicationName("RCore");
         $client->setClientId($this->clientId);
         $client->setClientSecret($this->clientSecret);
@@ -98,7 +82,7 @@ class Google implements OAuth
             $accessToken = $client->fetchAccessTokenWithAuthCode($code);
             $this->sessionManager->setAuthorizationToken($accessToken['access_token']);
 
-            $objOAuthService = new \Google_Service_Oauth2($client);
+            $objOAuthService = new Google_Service_Oauth2($client);
             $userData = $objOAuthService->userinfo->get();
 
             $this->sessionManager->setUser(new User(

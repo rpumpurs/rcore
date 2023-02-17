@@ -6,7 +6,7 @@ use RCore\Exceptions\ConfigNotDefined;
 
 class Envs
 {
-    private $params;
+    private array $params;
 
     public function __construct(array $params)
     {

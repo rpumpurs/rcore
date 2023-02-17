@@ -11,6 +11,7 @@ use RCore\Handlers\Paths;
 use RCore\Handlers\Routes;
 use RCore\Handlers\SessionManager;
 use Symfony\Component\Dotenv\Dotenv;
+use Symfony\Component\Dotenv\Exception\PathException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
@@ -21,11 +22,11 @@ use Symfony\Component\Routing\RequestContext;
 
 class Main
 {
-    private $paths;
+    private Paths $paths;
     /**
      * @var Routes
      */
-    private $routes;
+    private Routes $routes;
 
     public function __construct(Paths $paths, Routes $routes)
     {
@@ -33,10 +34,15 @@ class Main
         $this->routes = $routes;
     }
 
-    public function serve()
+    public function serve(): void
     {
         $dotEnv = new Dotenv();
-        $dotEnv->load($this->paths->envFile());
+        try {
+            $dotEnv->load($this->paths->envFile());
+        } catch (PathException $e) {
+            $response = new Response('.env file missing [' . $e->getMessage() . ']', 503);
+            $response->send();
+        }
 
         $request = Request::createFromGlobals();
 
@@ -61,13 +67,12 @@ class Main
             $controllerObject->runPreController();
             $arguments = $argumentResolver->getArguments($request, $controllerCallable);
             $response = call_user_func_array($controllerCallable, $arguments);
-        } catch (ResourceNotFoundException $exception) {
-            $response = new Response('Not Found', 404);
+        } catch (ResourceNotFoundException $e) {
+            $response = new Response('Not Found [' . $e->getMessage() . ']', 404);
         } catch (ConfigNotDefined $e) {
             $response = new Response('Application not configured. Missing [' . $e->getMessage() . ']', 503);
-        } catch (Exception $exception) {
-            var_dump($exception);
-            $response = new Response('An error occurred', 500);
+        } catch (Exception $e) {
+            $response = new Response('An error occurred [' . $e->getMessage() . ']', 500);
         }
 
         $response->send();

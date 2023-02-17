@@ -15,7 +15,7 @@ services:
       - rcore_phpfpm
 
   rcore_phpfpm:
-    image: php:7.3-fpm
+    image: php:8.2-fpm
     container_name: rcore_phpfpm
     volumes:
       - .:/rcore

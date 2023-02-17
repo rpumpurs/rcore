@@ -39,7 +39,7 @@ class Routes
         return $routes;
     }
 
-    protected function additionalRoutes(RouteCollection $routes)
+    protected function additionalRoutes(RouteCollection $routes): RouteCollection
     {
         return $routes;
     }

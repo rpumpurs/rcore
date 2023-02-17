@@ -6,29 +6,29 @@ use RCore\Objects\User;
 
 class SessionManager
 {
-    static $SESSION_EXPIRE_TIME = 3 * 60 * 60; // 3h
+    static int $SESSION_EXPIRE_TIME = 3 * 60 * 60; // 3h
 
     public function __construct()
     {
         session_start();
     }
 
-    public function setState(string $state)
+    public function setState(string $state): void
     {
         $_SESSION['state'] = $state;
     }
 
-    public function setAuthorizationCode(string $code)
+    public function setAuthorizationCode(string $code): void
     {
         $_SESSION['authorization_code'] = $code;
     }
 
-    public function setAuthorizationToken(string $token)
+    public function setAuthorizationToken(string $token): void
     {
         $_SESSION['authorization_token'] = $token;
     }
 
-    public function setUser(User $user)
+    public function setUser(User $user): void
     {
         $_SESSION['user'] = $user;
     }
@@ -53,13 +53,13 @@ class SessionManager
         return $_SESSION['user'] ?? null;
     }
 
-    public function logout()
+    public function logout(): void
     {
         session_destroy();
         session_start();
     }
 
-    public function setFlashErrorMessage(string $message)
+    public function setFlashErrorMessage(string $message): void
     {
         $_SESSION['flash_error_message'] = $message;
     }
@@ -72,7 +72,7 @@ class SessionManager
         return $message;
     }
 
-    public function setFlashSuccessMessage(string $message)
+    public function setFlashSuccessMessage(string $message): void
     {
         $_SESSION['flash_success_message'] = $message;
     }
@@ -85,12 +85,12 @@ class SessionManager
         return $message;
     }
 
-    public function setLastActivity()
+    public function setLastActivity(): void
     {
         $_SESSION['last_activity'] = time();
     }
 
-    public function isExpired()
+    public function isExpired(): int
     {
         return $_SESSION['last_activity'] < (time() - self::$SESSION_EXPIRE_TIME);
     }
@@ -100,12 +100,12 @@ class SessionManager
         return !empty($_SESSION['authorization_token']);
     }
 
-    public function setVar(string $name, $value)
+    public function setVar(string $name, $value): void
     {
         $_SESSION[$name] = $value;
     }
 
-    public function getVar(string $name)
+    public function getVar(string $name): ?string
     {
         return $_SESSION[$name] ?? null;
     }

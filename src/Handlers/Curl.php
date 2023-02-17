@@ -4,7 +4,7 @@ namespace RCore\Handlers;
 
 class Curl
 {
-    public static function call(string $url, array $header = [], $isPost = false, bool $isPut = false, bool $isDelete = false)
+    public static function call(string $url, array $header = [], $isPost = false, bool $isPut = false, bool $isDelete = false): array
     {
         $ch = curl_init();
 
@@ -32,7 +32,7 @@ class Curl
         return [json_decode($body, true), self::get_headers_from_curl_response($header)];
     }
 
-    private static function get_headers_from_curl_response($response)
+    private static function get_headers_from_curl_response($response): array
     {
         $headers = array();
 
