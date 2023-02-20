@@ -4,7 +4,7 @@ namespace RCore\Handlers;
 
 class ControllerConfig
 {
-    private $templateFolder;
+    private string $templateFolder;
 
     public function __construct(Paths $paths)
     {

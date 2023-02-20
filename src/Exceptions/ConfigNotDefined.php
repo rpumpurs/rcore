@@ -2,6 +2,8 @@
 
 namespace RCore\Exceptions;
 
-class ConfigNotDefined extends \Exception
+use Exception;
+
+class ConfigNotDefined extends Exception
 {
 }

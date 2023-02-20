@@ -2,7 +2,9 @@
 
 namespace RCore\Controllers;
 
+use RCore\Exceptions\ConfigNotDefined;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
 class AuthController extends ControllerBase
@@ -11,7 +13,7 @@ class AuthController extends ControllerBase
 
     protected $authRequired = false;
 
-    public function login()
+    public function login(): Response
     {
         if ($this->sessionManager->isAuthorized()) {
             return new RedirectResponse('/');
@@ -23,9 +25,9 @@ class AuthController extends ControllerBase
     /**
      * @param $using
      * @return RedirectResponse
-     * @throws \RCore\Exceptions\ConfigNotDefined
+     * @throws ConfigNotDefined
      */
-    public function loginRedirect($using)
+    public function loginRedirect($using): RedirectResponse
     {
         if ($this->sessionManager->isAuthorized()) {
             return new RedirectResponse('/');
@@ -39,9 +41,9 @@ class AuthController extends ControllerBase
     /**
      * @param Request $request
      * @return RedirectResponse
-     * @throws \RCore\Exceptions\ConfigNotDefined
+     * @throws ConfigNotDefined
      */
-    public function processOAuthResponse(Request $request)
+    public function processOAuthResponse(Request $request): RedirectResponse
     {
         if (!$this->resolveAuth()->processOAuthResponse($request)) {
             $this->sessionManager->setFlashErrorMessage('Login error, please contact the admin');
@@ -50,7 +52,7 @@ class AuthController extends ControllerBase
         return new RedirectResponse('/');
     }
 
-    public function logout()
+    public function logout(): RedirectResponse
     {
         $this->sessionManager->logout();
 

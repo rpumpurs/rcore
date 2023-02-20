@@ -85,6 +85,10 @@ class Google implements OAuth
             $objOAuthService = new Google_Service_Oauth2($client);
             $userData = $objOAuthService->userinfo->get();
 
+            if (!$userData) {
+                return false;
+            }
+
             $this->sessionManager->setUser(new User(
                 (int)$userData['id'], (string)$userData['name'], (string)$userData['email'], (string)$userData['picture']
             ));

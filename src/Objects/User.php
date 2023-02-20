@@ -4,13 +4,10 @@ namespace RCore\Objects;
 
 class User
 {
-    private $id;
-    private $name;
-    private $email;
-    /**
-     * @var string
-     */
-    private $pictureURL;
+    private int $id;
+    private string $name;
+    private string $email;
+    private string $pictureURL;
 
     public function __construct(int $id, string $name, string $email, string $pictureURL)
     {
