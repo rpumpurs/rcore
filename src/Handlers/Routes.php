@@ -7,8 +7,14 @@ use Symfony\Component\Routing\RouteCollection;
 
 class Routes
 {
+    private ?RouteCollection $additionalRoutes = null;
+
     public function resolve(): RouteCollection
     {
+        if ($this->additionalRoutes) {
+            return $this->additionalRoutes;
+        }
+
         $routes = new RouteCollection();
 
         $route = new Route('/', [
@@ -39,8 +45,8 @@ class Routes
         return $routes;
     }
 
-    protected function additionalRoutes(RouteCollection $routes): RouteCollection
+    public function additionalRoutes(RouteCollection $routes): void
     {
-        return $routes;
+        $this->additionalRoutes = $routes;
     }
 }

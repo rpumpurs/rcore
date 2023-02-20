@@ -13,12 +13,16 @@
     },
     "autoload": {
         "psr-4": {
-            "RCore\\": "src/"
+            "RCore\\": "src/",
+            "RTests\\": "tests/"
         }
     },
     "config": {
         "allow-plugins": {
             "php-http/discovery": false
         }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10"
     }
 }
