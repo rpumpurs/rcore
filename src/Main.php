@@ -8,7 +8,7 @@ use RCore\Exceptions\ConfigNotDefined;
 use RCore\Handlers\ControllerConfig;
 use RCore\Handlers\Envs;
 use RCore\Handlers\Paths;
-use RCore\Handlers\Routes;
+use RCore\Handlers\Routes\Routes;
 use RCore\Handlers\SessionManager;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Dotenv\Exception\PathException;
@@ -48,7 +48,7 @@ class Main
 
         $context = new RequestContext();
         $context->fromRequest($request);
-        $matcher = new UrlMatcher($this->routes->resolve(), $context);
+        $matcher = new UrlMatcher($this->routes->getCollection(), $context);
 
         $controllerResolver = new ControllerResolver();
         $argumentResolver = new ArgumentResolver();
