@@ -3,6 +3,7 @@
 namespace RCore\Controllers;
 
 use Exception;
+use Metricize\Metricize;
 use RCore\Exceptions\ConfigNotDefined;
 use RCore\Handlers\ControllerConfig;
 use RCore\Handlers\Envs;
@@ -19,37 +20,24 @@ use Twig\Loader\FilesystemLoader;
 
 class ControllerBase
 {
-    protected $applicationName;
+    protected string $applicationName;
 
-    protected $title = 'Index';
+    protected string$title = 'Index';
 
-    protected $authRequired = true;
+    protected bool $authRequired = true;
 
-    /**
-     * @var ControllerConfig
-     */
-    protected $config;
+    protected ControllerConfig $config;
+    protected Envs $envs;
+    protected OAuth $OAuth;
+    protected SessionManager $sessionManager;
+    protected Metricize $metricize;
 
-    /**
-     * @var Envs
-     */
-    protected $envs;
-
-    /**
-     * @var OAuth
-     */
-    protected $OAuth;
-
-    /**
-     * @var SessionManager
-     */
-    protected $sessionManager;
-
-    public function injectDependencies(ControllerConfig $config, Envs $envs, SessionManager $sessionManager)
+    public function injectDependencies(ControllerConfig $config, Envs $envs, SessionManager $sessionManager, Metricize $metricize): void
     {
         $this->config = $config;
         $this->envs = $envs;
         $this->sessionManager = $sessionManager;
+        $this->metricize = $metricize;
     }
 
     /**

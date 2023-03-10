@@ -3,6 +3,7 @@
 namespace RCore;
 
 use Exception;
+use Metricize\Metricize;
 use RCore\Controllers\ControllerBase;
 use RCore\Exceptions\ConfigNotDefined;
 use RCore\Handlers\ControllerConfig;
@@ -63,6 +64,7 @@ class Main
                 new ControllerConfig($this->paths),
                 new Envs($_ENV),
                 new SessionManager(),
+                new Metricize(['host' => 'rcore_metricize_redis', 'port' => 6379, 'auto_commit' => true])
                 );
             $controllerObject->runPreController();
             $arguments = $argumentResolver->getArguments($request, $controllerCallable);

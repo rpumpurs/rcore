@@ -2,16 +2,17 @@
 
 namespace RCore\Controllers;
 
+use Metricize\Standardized\SuccessConstraint;
 use RCore\Exceptions\ConfigNotDefined;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthController extends ControllerBase
 {
-    protected $title = 'Login';
+    protected string $title = 'Login';
 
-    protected $authRequired = false;
+    protected bool $authRequired = false;
 
     public function login(): Response
     {
@@ -46,8 +47,11 @@ class AuthController extends ControllerBase
     public function processOAuthResponse(Request $request): RedirectResponse
     {
         if (!$this->resolveAuth()->processOAuthResponse($request)) {
+            $this->metricize->shouldExecute('oauth_response', new SuccessConstraint(false));
             $this->sessionManager->setFlashErrorMessage('Login error, please contact the admin');
         }
+
+        ($this->metricize->shouldExecute('oauth_response', new SuccessConstraint(true)));
 
         return new RedirectResponse('/');
     }

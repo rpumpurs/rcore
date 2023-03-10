@@ -7,9 +7,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TestController extends ControllerBase
 {
-    protected $title = 'Test';
+    protected string $title = 'Test';
 
-    protected $authRequired = false;
+    protected bool $authRequired = false;
 
     public function index(): Response
     {

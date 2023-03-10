@@ -2,7 +2,6 @@ version: "3.5"
 services:
   rcore_nginx:
     image: nginx:alpine
-    container_name: rcore_nginx
     ports:
       - "80:80"
       - "443:443"
@@ -15,20 +14,20 @@ services:
       - rcore_phpfpm
 
   rcore_phpfpm:
-    image: php:8.2-fpm
-    container_name: rcore_phpfpm
+    #image: php:8.2-fpm
+    build:
+      dockerfile: ./dockerfiles/phpfpm/Dockerfile
     volumes:
       - .:/rcore
-      - dev-cachevolume:/data
+      - rcore-cachevolume:/data
     working_dir: /rcore
     networks:
       - rcore_network
 
   rcore_mysql:
     image: mysql:latest
-    container_name: rcore_mysql
     volumes:
-      - dev-datavolume:/data/mysql
+      - rcore-datavolume:/data/mysql
     networks:
       - rcore_network
     environment:
@@ -37,7 +36,6 @@ services:
 
   rcore_pma:
     image: phpmyadmin/phpmyadmin
-    container_name: rcore_pma
     volumes:
       - ./etc/pma/config.user.inc.php:/etc/phpmyadmin/config.user.inc.php
     networks:
@@ -48,10 +46,41 @@ services:
       PMA_HOST: rcore_mysql
       PMA_ABSOLUTE_URI: http://localhost/pma/
 
+  rcore_metricize_redis:
+    image: redis
+    ports:
+      - "6380:6380"
+      - "6379:6379"
+    networks:
+      - rcore_network
+
+  rcore_metricize_prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./vendor/rudolfspumpurs/metricize/prometheus.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - rcore_network
+
+  rcore_metricize_grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./vendor/rudolfspumpurs/metricize/grafana.ini:/etc/grafana/grafana.ini
+      - ./vendor/rudolfspumpurs/metricize/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml
+      - ./vendor/rudolfspumpurs/metricize/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./vendor/rudolfspumpurs/metricize/standardized-dashboard.json:/var/lib/grafana/dashboards/standardized-dashboard.json
+      - rcore-grafana-storage:/var/lib/grafana
+    networks:
+      - rcore_network
+
 networks:
   rcore_network:
     driver: bridge
 
 volumes:
-  dev-datavolume:
-  dev-cachevolume:
+  rcore-datavolume:
+  rcore-cachevolume:
+  rcore-grafana-storage:
