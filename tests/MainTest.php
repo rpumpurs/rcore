@@ -4,10 +4,7 @@ namespace RTests;
 
 use PHPUnit\Framework\TestCase;
 use RCore\Handlers\Paths;
-use RCore\Handlers\Routes\Routes;
 use RCore\Main;
-use Symfony\Component\Routing\Route;
-use Symfony\Component\Routing\RouteCollection;
 
 final class MainTest extends TestCase
 {

@@ -4,6 +4,7 @@ namespace RCore\Handlers\Routes;
 
 use RCore\Controllers\AuthController;
 use RCore\Controllers\ControllerBase;
+use RCore\Controllers\MetricsController;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
@@ -32,6 +33,10 @@ class RoutesBase implements Routes
         $routes->add('oauth_response', new Route('/login/oauth_response', ['_controller' => [
             AuthController::class,
             'processOAuthResponse'
+        ]]));
+        $routes->add('metrics', new Route('/metrics', ['_controller' => [
+            MetricsController::class,
+            'provide'
         ]]));
 
         return $routes;

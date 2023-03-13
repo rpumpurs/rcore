@@ -10,7 +10,7 @@
         "symfony/dotenv": "^6.2",
         "ext-curl": "*",
         "ext-json": "*",
-        "rudolfspumpurs/metricize": "^0.1.4"
+        "rudolfspumpurs/metricize": "^0.1.6"
     },
     "autoload": {
         "psr-4": {

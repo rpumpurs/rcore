@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "68e63cdb8c6341bf8e3b6a38a5a08555",
+    "content-hash": "ea01c4d626b566f657efb6a3e4ecf613",
     "packages": [
         {
             "name": "clue/stream-filter",
@@ -1987,11 +1987,11 @@
         },
         {
             "name": "rudolfspumpurs/metricize",
-            "version": "0.1.4",
+            "version": "0.1.6",
             "source": {
                 "type": "git",
                 "url": "git@bitbucket.org:rudolfspumpurs/metricize.git",
-                "reference": "9a0abb0bc042420ca6c40f74e0b47fff0b57b4cc"
+                "reference": "e7aba16b1f07161155d3fbdfa8ee848bbde013d3"
             },
             "require": {
                 "ext-redis": "*",
@@ -2012,7 +2012,7 @@
                     "Tests\\": "tests/"
                 }
             },
-            "time": "2023-03-10T13:59:28+00:00"
+            "time": "2023-03-13T10:01:13+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",

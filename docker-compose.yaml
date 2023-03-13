@@ -14,7 +14,6 @@ services:
       - rcore_phpfpm
 
   rcore_phpfpm:
-    #image: php:8.2-fpm
     build:
       dockerfile: ./dockerfiles/phpfpm/Dockerfile
     volumes:
@@ -50,7 +49,6 @@ services:
     image: redis
     ports:
       - "6380:6380"
-      - "6379:6379"
     networks:
       - rcore_network
 
