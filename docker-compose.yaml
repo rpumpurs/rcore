@@ -55,9 +55,14 @@ services:
   rcore_metricize_prometheus:
     image: prom/prometheus
     volumes:
-      - ./vendor/rudolfspumpurs/metricize/prometheus.yaml:/etc/prometheus/prometheus.yml
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+      - rcore-prometheus-storage:/prometheus
     ports:
       - "9090:9090"
+    depends_on:
+      - rcore_nginx
+      - rcore_metricize_nginx_exporter
+      - rcore_metricize_node_exporter
     networks:
       - rcore_network
 
@@ -71,6 +76,35 @@ services:
       - ./vendor/rudolfspumpurs/metricize/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
       - ./vendor/rudolfspumpurs/metricize/standardized-dashboard.json:/var/lib/grafana/dashboards/standardized-dashboard.json
       - rcore-grafana-storage:/var/lib/grafana
+    depends_on:
+      - rcore_metricize_prometheus
+    networks:
+      - rcore_network
+
+  rcore_metricize_nginx_exporter:
+    image: nginx/nginx-prometheus-exporter
+    ports:
+      - "9113:9113"
+    command:
+      - -nginx.scrape-uri
+      - http://rcore_nginx/nginx_status
+    depends_on:
+      - rcore_nginx
+    networks:
+      - rcore_network
+
+  rcore_metricize_node_exporter:
+    image: prom/node-exporter:latest
+    networks:
+      - rcore_network
+
+  rcore_metricize_php_fpm_exporter:
+    image: hipages/php-fpm_exporter:latest
+    ports:
+      - "9253:9253"
+    environment:
+      PHP_FPM_SCRAPE_URI: "tcp://rcore_phpfpm:9000/status"
+      PHP_FPM_LOG_LEVEL: "debug"
     networks:
       - rcore_network
 
@@ -82,3 +116,4 @@ volumes:
   rcore-datavolume:
   rcore-cachevolume:
   rcore-grafana-storage:
+  rcore-prometheus-storage:

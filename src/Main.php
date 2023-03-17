@@ -4,6 +4,8 @@ namespace RCore;
 
 use Exception;
 use Metricize\Metricize;
+use Prometheus\Histogram;
+use Prometheus\Storage\Redis;
 use RCore\Controllers\ControllerBase;
 use RCore\Exceptions\ConfigNotDefined;
 use RCore\Handlers\ControllerConfig;
@@ -37,6 +39,16 @@ class Main
 
     public function serve(): void
     {
+        $h = new Histogram(new Redis([
+            'host' => 'rcore_metricize_redis',
+            'port' => 6379,
+            'timeout' => 3, // in seconds
+            'read_timeout' => 10, // in seconds
+            'persistent_connections' => true,
+        ]), 'php', 'load_time', '');
+
+        $timeStart = microtime(true);
+
         $dotEnv = new Dotenv();
         try {
             $dotEnv->load($this->paths->envFile());
@@ -76,6 +88,8 @@ class Main
         } catch (Exception $e) {
             $response = new Response('An error occurred [' . $e->getMessage() . ']', 500);
         }
+
+        $h->observe(microtime(true) - $timeStart);
 
         $response->send();
     }
