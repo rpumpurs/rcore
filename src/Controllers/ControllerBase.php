@@ -22,7 +22,7 @@ class ControllerBase
 {
     protected string $applicationName;
 
-    protected string$title = 'Index';
+    protected string $title = 'Index';
 
     protected bool $authRequired = true;
 

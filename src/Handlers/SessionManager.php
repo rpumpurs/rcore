@@ -10,7 +10,7 @@ class SessionManager
 
     public function __construct()
     {
-        session_start();
+        $this->startSession();
     }
 
     public function setState(string $state): void
@@ -55,8 +55,8 @@ class SessionManager
 
     public function logout(): void
     {
-        session_destroy();
-        session_start();
+        $this->destroySession();
+        $this->startSession();
     }
 
     public function setFlashErrorMessage(string $message): void
@@ -108,5 +108,20 @@ class SessionManager
     public function getVar(string $name): ?string
     {
         return $_SESSION[$name] ?? null;
+    }
+
+    private function startSession(): void
+    {
+        session_start([
+            'cookie_httponly' => true,
+            'cookie_samesite' => 'lax',
+            'cookie_domain' => 'localhost',
+            'cookie_path' => '/',
+        ]);
+    }
+
+    private function destroySession(): void
+    {
+        session_destroy();
     }
 }
