@@ -113,9 +113,10 @@ class SessionManager
     private function startSession(): void
     {
         session_start([
+            'cookie_secure' => true,
             'cookie_httponly' => true,
             'cookie_samesite' => 'lax',
-            'cookie_domain' => 'localhost',
+            'cookie_domain' => ($_SERVER['HTTP_HOST'] !== 'localhost') ? $_SERVER['HTTP_HOST'] : false,
             'cookie_path' => '/',
         ]);
     }

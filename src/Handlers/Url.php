@@ -8,7 +8,7 @@ class Url
     {
         return sprintf(
             "%s://%s",
-            isset($_SERVER['HTTP_HTTPS']) && $_SERVER['HTTP_HTTPS'] != 'off' ? 'https' : 'http',
+            'https',
             $_SERVER['HTTP_HOST']
         );
     }
