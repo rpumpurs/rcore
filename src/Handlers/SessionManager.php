@@ -116,7 +116,7 @@ class SessionManager
             'cookie_secure' => true,
             'cookie_httponly' => true,
             'cookie_samesite' => 'lax',
-            'cookie_domain' => ($_SERVER['HTTP_HOST'] !== 'localhost') ? $_SERVER['HTTP_HOST'] : false,
+            'cookie_domain' => (isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] !== 'localhost') ? $_SERVER['HTTP_HOST'] : false,
             'cookie_path' => '/',
         ]);
     }
